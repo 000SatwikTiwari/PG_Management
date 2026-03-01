@@ -265,6 +265,8 @@ def get_unique_workers():
     return {"total_people": len(people), "people": people}
 
 # ================= ELECTRICITY BILL =================
+from io import BytesIO
+
 @app.get("/electricity-bill")
 def generate_electricity_bill(
     name: str,
@@ -282,10 +284,10 @@ def generate_electricity_bill(
     units_used = current_reading - last_reading
     total_bill = units_used * rate_per_unit
 
-    file_name = f"{name}_electricity_bill.pdf"
-    file_path = f"./{file_name}"
+    # ✅ Create PDF in memory (NOT on disk)
+    buffer = BytesIO()
 
-    doc = SimpleDocTemplate(file_path)
+    doc = SimpleDocTemplate(buffer)
     elements = []
     styles = getSampleStyleSheet()
 
@@ -306,9 +308,10 @@ def generate_electricity_bill(
 
     doc.build(elements)
 
-    return FileResponse(
-        path=file_path,
-        media_type="application/pdf",
-        filename=file_name
+    buffer.seek(0)
 
+    return FileResponse(
+        buffer,
+        media_type="application/pdf",
+        filename=f"{name}_electricity_bill.pdf"
     )
