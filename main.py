@@ -42,7 +42,7 @@ ul { background:white; padding:15px; border-radius:5px; }
 </head>
 <body>
 
-<header>PG Management System</header>
+<header>PG Management System-by Satwik</header>
 
 <div class="container">
 
@@ -317,3 +317,4 @@ def generate_electricity_bill(
             "Content-Disposition": f"attachment; filename={name}_electricity_bill.pdf"
         }
     )
+
