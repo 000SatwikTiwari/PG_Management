@@ -266,6 +266,7 @@ def get_unique_workers():
 
 # ================= ELECTRICITY BILL =================
 from io import BytesIO
+from fastapi.responses import StreamingResponse
 
 @app.get("/electricity-bill")
 def generate_electricity_bill(
@@ -284,7 +285,6 @@ def generate_electricity_bill(
     units_used = current_reading - last_reading
     total_bill = units_used * rate_per_unit
 
-    # ✅ Create PDF in memory (NOT on disk)
     buffer = BytesIO()
 
     doc = SimpleDocTemplate(buffer)
@@ -310,8 +310,10 @@ def generate_electricity_bill(
 
     buffer.seek(0)
 
-    return FileResponse(
+    return StreamingResponse(
         buffer,
         media_type="application/pdf",
-        filename=f"{name}_electricity_bill.pdf"
+        headers={
+            "Content-Disposition": f"attachment; filename={name}_electricity_bill.pdf"
+        }
     )
