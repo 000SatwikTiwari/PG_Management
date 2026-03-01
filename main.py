@@ -310,4 +310,5 @@ def generate_electricity_bill(
         path=file_path,
         media_type="application/pdf",
         filename=file_name
+
     )
